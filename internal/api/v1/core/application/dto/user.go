@@ -5,7 +5,7 @@ type CreateUserDto struct {
 	Email    string `json:"email" db:"email" binding:"required,email,max=64,min=6"`
 	Password string `json:"password" db:"password" binding:"required,max=64,min=6"`
 	Birthday string `json:"birthday" db:"birthday" binding:"required,min=8,max=10"`
-	Sex      string `json:"sex" db:"sex" binding:"required,min=8,max=10"`
+	Sex      string `json:"sex" db:"sex" binding:"required,min=4,max=6"`
 	Bio      string `json:"bio" db:"bio" binding:"required,max=100"`
 }
 

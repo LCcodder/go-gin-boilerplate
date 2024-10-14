@@ -29,24 +29,3 @@ func main() {
 
 	r.Run("localhost:8080")
 }
-
-// package main
-
-// import (
-// 	"log"
-
-// 	"golang.org/x/crypto/bcrypt"
-// )
-
-// const (
-// 	hash     = "$2a$07$9ox/5ISZ4mOtlDCHEUNKiOBnLCIJUrNoW.UTmSR2nqtGl7D..lHRG"
-// 	password = "12345678"
-// )
-
-// func main() {
-// 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	log.Println("Password matches")
-// }

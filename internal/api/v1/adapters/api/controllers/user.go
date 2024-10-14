@@ -32,3 +32,17 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 	userToReturn := utils.ExcludeUserCredentials(u)
 	ctx.JSON(201, &userToReturn)
 }
+
+func (c *UserController) GetUserByUsername(ctx *gin.Context) {
+	username := ctx.Param("username")
+
+	u, err := c.s.GetUserByUsername(ctx, username)
+	if err != nil {
+		ctx.JSON(int(err.StatusCode), err)
+		return
+	}
+
+	userToReturn := utils.ExcludeUserCredentials(u)
+
+	ctx.JSON(200, &userToReturn)
+}
