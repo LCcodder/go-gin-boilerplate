@@ -2,8 +2,10 @@ package auth_service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"example.com/m/internal/api/v1/adapters/repositories"
 	"example.com/m/internal/api/v1/core/application/errorz"
 	"example.com/m/internal/api/v1/core/application/services/user_service"
 	"example.com/m/internal/config"
@@ -13,11 +15,13 @@ import (
 
 type AuthService struct {
 	s user_service.UserService
+	r *repositories.TokenRepository
 }
 
-func NewAuthService(s *user_service.UserService) *AuthService {
+func NewAuthService(s *user_service.UserService, r *repositories.TokenRepository) *AuthService {
 	return &AuthService{
 		s: *s,
+		r: r,
 	}
 }
 
@@ -55,5 +59,23 @@ func (s *AuthService) Authorize(ctx context.Context, email string, password stri
 		return nil, &errorz.ErrServiceUnavailable
 	}
 
+	err = s.r.Set(&ctx, email, *token)
+	if err != nil {
+		return nil, &errorz.ErrServiceUnavailable
+	}
+
 	return token, nil
 }
+
+func (s *AuthService) CheckTokenExistance(ctx context.Context, email string, token string) *errorz.Error_ {
+	t, err := s.r.GetByEmail(&ctx, email)
+	fmt.Println(*t)
+	if err != nil {
+		return &errorz.ErrServiceUnavailable
+	}
+	if *t != token {
+		return &errorz.ErrAuthInvalidToken
+	}
+	return nil
+}
+func (s *AuthService) ChangePassword(ctx context.Context) {}

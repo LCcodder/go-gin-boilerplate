@@ -3,7 +3,7 @@ package user_service
 import (
 	"context"
 
-	"example.com/m/internal/api/v1/adapters/database/repositories"
+	"example.com/m/internal/api/v1/adapters/repositories"
 	"example.com/m/internal/api/v1/core/application/dto"
 	"example.com/m/internal/api/v1/core/application/errorz"
 	"example.com/m/internal/api/v1/utils"

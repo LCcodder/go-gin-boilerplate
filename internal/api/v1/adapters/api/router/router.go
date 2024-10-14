@@ -8,9 +8,9 @@ import (
 
 const prefix string = "/api/v1"
 
-func BindRoutes(r *gin.Engine, uc *controllers.UserController, ac *controllers.AuthController) {
+func BindRoutes(r *gin.Engine, a *middlewares.AuthMiddleware, uc *controllers.UserController, ac *controllers.AuthController) {
 	r.POST(prefix+"/users", uc.CreateUser)
 	r.POST(prefix+"/auth", ac.AuthorizeUser)
-	r.GET(prefix+"/users/:username", middlewares.Authenticate(), uc.GetUserByUsername)
-	r.GET(prefix+"/users/me", middlewares.Authenticate(), uc.GetUserProfile)
+	r.GET(prefix+"/users/:username", a.Authenticate(), uc.GetUserByUsername)
+	r.GET(prefix+"/users/me", a.Authenticate(), uc.GetUserProfile)
 }
