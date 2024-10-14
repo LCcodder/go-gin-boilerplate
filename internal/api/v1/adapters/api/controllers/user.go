@@ -46,3 +46,29 @@ func (c *UserController) GetUserByUsername(ctx *gin.Context) {
 
 	ctx.JSON(200, &userToReturn)
 }
+
+func (c *UserController) GetUserProfile(ctx *gin.Context) {
+	t, err := utils.ExtractTokenFromHeaders(ctx)
+	if err != nil {
+		ctx.JSON(int(err.StatusCode), err)
+		return
+	}
+
+	p, err := utils.ExtractPayloadFromJWT(*t)
+	if err != nil {
+		ctx.JSON(int(err.StatusCode), err)
+		return
+	}
+
+	username := p["username"].(string)
+
+	u, err := c.s.GetUserByUsername(ctx, username)
+	if err != nil {
+		ctx.JSON(int(err.StatusCode), err)
+		return
+	}
+
+	userToReturn := utils.ExcludeUserCredentials(u)
+
+	ctx.JSON(200, &userToReturn)
+}

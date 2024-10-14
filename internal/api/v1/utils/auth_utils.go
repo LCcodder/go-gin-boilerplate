@@ -19,8 +19,19 @@ func ValidateTokenSignature(token string) *errorz.Error_ {
 	return nil
 }
 
-func ExtractPayloadFromJWT() {
+func ExtractPayloadFromJWT(token string) (jwt.MapClaims, *errorz.Error_) {
+	t, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		return []byte(config.Config.JWTSecret), nil
+	})
+	if err != nil {
+		return nil, &errorz.ErrAuthInvalidToken
+	}
 
+	if claims, ok := t.Claims.(jwt.MapClaims); ok && t.Valid {
+		return claims, nil
+	} else {
+		return nil, &errorz.ErrAuthInvalidToken
+	}
 }
 
 type authHeader struct {

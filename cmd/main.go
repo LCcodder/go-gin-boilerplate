@@ -25,7 +25,7 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 	r := gin.Default()
 
-	router.BindUserRoutes(r, userController, authController)
+	router.BindRoutes(r, userController, authController)
 
 	r.Run("localhost:8080")
 }

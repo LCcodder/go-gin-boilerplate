@@ -6,9 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func BindUserRoutes(r *gin.Engine, uc *controllers.UserController, ac *controllers.AuthController) {
-	authRequiredGroup := r.Group("/authRequired").Use(middlewares.Authenticate())
-	r.POST("/users", uc.CreateUser)
-	r.POST("/auth", ac.AuthorizeUser)
-	authRequiredGroup.GET("/users/:username", middlewares.Authenticate(), uc.GetUserByUsername)
+const prefix string = "/api/v1"
+
+func BindRoutes(r *gin.Engine, uc *controllers.UserController, ac *controllers.AuthController) {
+	r.POST(prefix+"/users", uc.CreateUser)
+	r.POST(prefix+"/auth", ac.AuthorizeUser)
+	r.GET(prefix+"/users/:username", middlewares.Authenticate(), uc.GetUserByUsername)
+	r.GET(prefix+"/users/me", middlewares.Authenticate(), uc.GetUserProfile)
 }
