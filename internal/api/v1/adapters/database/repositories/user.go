@@ -3,7 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	"example.com/m/internal/api/v1/core/application/dto"
 	"github.com/doug-martin/goqu/v9"
@@ -24,7 +23,6 @@ func (r *UserRepository) Create(user *dto.UserDto) error {
 	_, err := r.db.Exec(query)
 
 	if err != nil {
-		fmt.Println(err)
 		return err
 	}
 
@@ -37,12 +35,11 @@ func (r *UserRepository) GetByUsername(username *string) (*dto.UserDto, error) {
 	}).ToSQL()
 
 	var u dto.UserDto
-	err := r.db.QueryRow(query).Scan(&u.Username, &u.Email, &u.Password, &u.Birthday, &u.Sex, &u.CreatedAt, &u.UpdatedAt)
+	err := r.db.QueryRow(query).Scan(&u.Email, &u.Username, &u.Birthday, &u.Sex, &u.Bio, &u.Password, &u.CreatedAt, &u.UpdatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 
@@ -55,13 +52,11 @@ func (r *UserRepository) GetByEmail(email *string) (*dto.UserDto, error) {
 	}).ToSQL()
 
 	var u dto.UserDto
-	fmt.Println(query)
-	err := r.db.QueryRow(query).Scan(&u.Username, &u.Email, &u.Password, &u.Birthday, &u.Sex, &u.CreatedAt, &u.UpdatedAt)
+	err := r.db.QueryRow(query).Scan(&u.Email, &u.Username, &u.Birthday, &u.Sex, &u.Bio, &u.Password, &u.CreatedAt, &u.UpdatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 

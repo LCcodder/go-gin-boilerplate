@@ -2,15 +2,16 @@ package controllers
 
 import (
 	"example.com/m/internal/api/v1/core/application/dto"
-	"example.com/m/internal/api/v1/core/application/services"
+	"example.com/m/internal/api/v1/core/application/services/user_service"
+	"example.com/m/internal/api/v1/utils"
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
-	s services.UserService
+	s user_service.UserService
 }
 
-func NewUserService(s *services.UserService) *UserController {
+func NewUserController(s *user_service.UserService) *UserController {
 	return &UserController{
 		s: *s,
 	}
@@ -18,12 +19,16 @@ func NewUserService(s *services.UserService) *UserController {
 
 func (c *UserController) CreateUser(ctx *gin.Context) {
 	var user dto.CreateUserDto
-	ctx.BindJSON(&user)
-	res, err := c.s.CreateUser(ctx, user)
+	if err := ctx.ShouldBindBodyWithJSON(&user); err != nil {
+		ctx.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	u, err := c.s.CreateUser(ctx, user)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
-
-	ctx.JSON(201, res)
+	userToReturn := utils.ExcludeUserCredentials(u)
+	ctx.JSON(201, &userToReturn)
 }

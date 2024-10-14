@@ -2,13 +2,14 @@ package config
 
 import (
 	"fmt"
+	"time"
 )
 
 const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "_"
+	password = "r1"
 	dbname   = "demo"
 )
 
@@ -19,7 +20,7 @@ var (
 type AppConfig struct {
 	PostgresConnectionString string
 	JWTSecret                string
-	JWTExpiration            string
+	JWTExpiration            time.Duration
 }
 
 func InitConfig() {
@@ -28,6 +29,6 @@ func InitConfig() {
 			"password=%s dbname=%s sslmode=disable",
 			host, port, user, password, dbname),
 		JWTSecret:     "dasmkdasmkda",
-		JWTExpiration: "",
+		JWTExpiration: time.Hour * 24 * 90,
 	}
 }

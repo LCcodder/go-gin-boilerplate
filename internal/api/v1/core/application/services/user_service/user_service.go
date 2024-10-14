@@ -1,4 +1,4 @@
-package services
+package user_service
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 	return &UserService{r: *repo}
 }
 
-func (s *UserService) CreateUser(ctx context.Context, u dto.CreateUserDto) (*dto.GetUserDto, *errorz.Error_) {
+func (s *UserService) CreateUser(ctx context.Context, u dto.CreateUserDto) (*dto.UserDto, *errorz.Error_) {
 	foundUserByEmail, err := s.r.GetByEmail(&u.Email)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
@@ -40,11 +40,10 @@ func (s *UserService) CreateUser(ctx context.Context, u dto.CreateUserDto) (*dto
 		return nil, &errorz.ErrDatabaseError
 	}
 
-	userWOCredentials := utils.ExcludeUserCredentials(&userToCreate)
-	return &userWOCredentials, nil
+	return &userToCreate, nil
 }
 
-func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*dto.GetUserDto, *errorz.Error_) {
+func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*dto.UserDto, *errorz.Error_) {
 	u, err := s.r.GetByEmail(&email)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
@@ -54,11 +53,10 @@ func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*dto.Ge
 		return nil, &errorz.ErrUserNotFound
 	}
 
-	userToReturn := utils.ExcludeUserCredentials(u)
-	return &userToReturn, nil
+	return u, nil
 }
 
-func (s *UserService) GetUserByUsername(ctx context.Context, username string) (*dto.GetUserDto, *errorz.Error_) {
+func (s *UserService) GetUserByUsername(ctx context.Context, username string) (*dto.UserDto, *errorz.Error_) {
 	u, err := s.r.GetByUsername(&username)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
@@ -68,6 +66,5 @@ func (s *UserService) GetUserByUsername(ctx context.Context, username string) (*
 		return nil, &errorz.ErrUserNotFound
 	}
 
-	userToReturn := utils.ExcludeUserCredentials(u)
-	return &userToReturn, nil
+	return u, nil
 }

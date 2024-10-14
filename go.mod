@@ -4,6 +4,8 @@ go 1.21.6
 
 require github.com/doug-martin/goqu v5.0.0+incompatible
 
+require github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+
 require (
 	github.com/bytedance/sonic v1.12.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect

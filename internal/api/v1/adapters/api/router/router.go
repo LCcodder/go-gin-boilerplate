@@ -7,6 +7,7 @@ import (
 
 const prefix string = "/api/v1"
 
-func BindUserRoutes(r *gin.Engine, c *controllers.UserController) {
-	r.POST(prefix+"/users", c.CreateUser)
+func BindUserRoutes(r *gin.Engine, uc *controllers.UserController, ac *controllers.AuthController) {
+	r.POST(prefix+"/users", uc.CreateUser)
+	r.POST(prefix+"/auth", ac.AuthorizeUser)
 }
