@@ -3,14 +3,7 @@ package config
 import (
 	"fmt"
 	"time"
-)
-
-var (
-	host     = "localhost"
-	port     = "5432"
-	user     = "postgres"
-	password = ""
-	dbname   = "demo"
+	"os"
 )
 
 var (
@@ -29,7 +22,11 @@ func InitConfig() {
 	Config = AppConfig{
 		PostgresConnectionString: fmt.Sprintf("host=%s port=%s user=%s "+
 			"password=%s dbname=%s sslmode=disable",
-			host, port, user, password, dbname),
+			os.Getenv("DB_HOST"),
+			os.Getenv("DB_PORT"),
+			os.Getenv("DB_USER"),
+			os.Getenv("DB_PASSWORD"),
+			os.Getenv("DB_NAME")),
 		JWTSecret:             "dasmkdasmkda",
 		JWTExpiration:         time.Hour * 24 * 90,
 		RedisConnectionString: "localhost:6379",
