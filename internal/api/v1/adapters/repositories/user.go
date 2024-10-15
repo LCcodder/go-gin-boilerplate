@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 
 	"example.com/m/internal/api/v1/core/application/dto"
@@ -18,8 +19,8 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	}
 }
 
-func (r *UserRepository) Create(user *dto.UserDto) error {
-	query, _, _ := goqu.Insert("users").Rows(*user).ToSQL()
+func (r *UserRepository) Create(u *dto.UserDto) error {
+	query, _, _ := goqu.Insert("users").Rows(*u).ToSQL()
 	_, err := r.db.Exec(query)
 
 	if err != nil {
@@ -61,4 +62,23 @@ func (r *UserRepository) GetByEmail(email *string) (*dto.UserDto, error) {
 	}
 
 	return &u, nil
+}
+
+func (r *UserRepository) UpdateByEmail(email *string, u *dto.UpdateUserDto) error {
+	var uMap map[string]interface{}
+	inrec, _ := json.Marshal(*u)
+	json.Unmarshal(inrec, &uMap)
+
+	var rec goqu.Record = uMap
+
+	query, _, _ := goqu.From("users").Where(goqu.C("email").Eq(*email)).Update().Set(
+		rec,
+	).ToSQL()
+
+	_, err := r.db.Exec(query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

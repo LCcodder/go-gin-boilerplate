@@ -7,28 +7,32 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUserTimestamps(user *dto.CreateUserDto) dto.UserDto {
+func CreateUserTimestamps(u *dto.CreateUserDto) dto.UserDto {
 	return dto.UserDto{
-		Username:  user.Username,
-		Email:     user.Email,
-		Password:  user.Password,
-		Birthday:  user.Birthday,
-		Sex:       user.Sex,
-		Bio:       user.Bio,
+		Username:  u.Username,
+		Email:     u.Email,
+		Password:  u.Password,
+		Birthday:  u.Birthday,
+		Sex:       u.Sex,
+		Bio:       u.Bio,
 		CreatedAt: time.Now().UTC().Format("2006-01-02T15:04:05Z"),
 		UpdatedAt: time.Now().UTC().Format("2006-01-02T15:04:05Z"),
 	}
 }
 
-func ExcludeUserCredentials(user *dto.UserDto) dto.GetUserDto {
+func UpdateUserTimestamps(u *dto.UpdateUserDto) {
+	u.UpdatedAt = time.Now().UTC().Format("2006-01-02T15:04:05Z")
+}
+
+func ExcludeUserCredentials(u *dto.UserDto) dto.GetUserDto {
 	return dto.GetUserDto{
-		Username:  user.Username,
-		Email:     user.Email,
-		Birthday:  user.Birthday,
-		Sex:       user.Sex,
-		Bio:       user.Bio,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		Username:  u.Username,
+		Email:     u.Email,
+		Birthday:  u.Birthday,
+		Sex:       u.Sex,
+		Bio:       u.Bio,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
 	}
 }
 

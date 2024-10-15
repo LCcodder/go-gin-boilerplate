@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"example.com/m/internal/api/v1/adapters/repositories"
+	"example.com/m/internal/api/v1/core/application/dto"
 	"example.com/m/internal/api/v1/core/application/errorz"
 	"example.com/m/internal/api/v1/core/application/services/user_service"
+	"example.com/m/internal/api/v1/utils"
 	"example.com/m/internal/config"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -78,4 +80,40 @@ func (s *AuthService) CheckTokenExistance(ctx context.Context, email string, tok
 	}
 	return nil
 }
-func (s *AuthService) ChangePassword(ctx context.Context) {}
+func (s *AuthService) ChangePassword(ctx context.Context, email string, oldPassword string, newPassword string) *errorz.Error_ {
+	if oldPassword == newPassword {
+		return &errorz.ErrAuthWrongCredentials
+	}
+
+	u, exception := s.s.GetUserByEmail(ctx, email)
+	if exception != nil {
+		if exception.StatusCode == 404 {
+			return &errorz.ErrAuthWrongCredentials
+		}
+		return exception
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(oldPassword)); err != nil {
+		fmt.Println("penis")
+		return &errorz.ErrAuthWrongCredentials
+	}
+
+	newHashedPassword, err := utils.HashPassword(newPassword)
+	if err != nil {
+		return &errorz.ErrServiceUnavailable
+	}
+
+	_, exception = s.s.UpdateUserByEmail(ctx, email, dto.UpdateUserDto{
+		Password: newHashedPassword,
+	})
+	if exception != nil {
+		return exception
+	}
+
+	err = s.r.DeleteByEmail(&ctx, email)
+	if err != nil {
+		return &errorz.ErrServiceUnavailable
+	}
+
+	return nil
+}

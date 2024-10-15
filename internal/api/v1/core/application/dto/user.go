@@ -29,3 +29,14 @@ type GetUserDto struct {
 	CreatedAt string `json:"created_at" db:"created_at"`
 	UpdatedAt string `json:"updated_at" db:"updated_at"`
 }
+
+type UpdateUserDto struct {
+	Username string `json:"username,omitempty" db:"username" binding:"omitempty,max=32,min=6"`
+	Email    string `json:"email,omitempty" db:"email" binding:"omitempty,email,max=64,min=6"`
+	Birthday string `json:"birthday,omitempty" db:"birthday" binding:"omitempty,min=8,max=10"`
+	Sex      string `json:"sex,omitempty" db:"sex" binding:"omitempty,min=4,max=6"`
+	Bio      string `json:"bio,omitempty" db:"bio" binding:"omitempty,max=100"`
+	Password string `json:"password" db:"password"`
+	// sets in service automatically
+	UpdatedAt string `json:"updated_at" db:"updated_at"`
+}

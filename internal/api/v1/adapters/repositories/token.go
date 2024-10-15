@@ -36,3 +36,11 @@ func (r *TokenRepository) Set(ctx *context.Context, email string, token string) 
 	}
 	return nil
 }
+
+func (r *TokenRepository) DeleteByEmail(ctx *context.Context, email string) error {
+	err := r.rdb.Del(*ctx, email).Err()
+	if err != nil {
+		return err
+	}
+	return nil
+}

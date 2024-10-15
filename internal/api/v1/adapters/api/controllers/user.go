@@ -72,3 +72,35 @@ func (c *UserController) GetUserProfile(ctx *gin.Context) {
 
 	ctx.JSON(200, &userToReturn)
 }
+
+func (c *UserController) UpdateUserProfile(ctx *gin.Context) {
+	t, err := utils.ExtractTokenFromHeaders(ctx)
+	if err != nil {
+		ctx.JSON(int(err.StatusCode), err)
+		return
+	}
+
+	p, err := utils.ExtractPayloadFromJWT(*t)
+	if err != nil {
+		ctx.JSON(int(err.StatusCode), err)
+		return
+	}
+
+	email := p["email"].(string)
+
+	var updateData dto.UpdateUserDto
+	if err := ctx.ShouldBindBodyWithJSON(&updateData); err != nil {
+		ctx.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedUser, err := c.s.UpdateUserByEmail(ctx, email, updateData)
+	if err != nil {
+		ctx.JSON(int(err.StatusCode), err)
+		return
+	}
+
+	userToReturn := utils.ExcludeUserCredentials(updatedUser)
+
+	ctx.JSON(200, &userToReturn)
+}
