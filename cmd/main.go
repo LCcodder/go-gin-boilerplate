@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"example.com/m/internal/api/v1/adapters/api/controllers"
 	"example.com/m/internal/api/v1/adapters/repositories"
 	"example.com/m/internal/api/v1/core/application/services/auth_service"
@@ -11,10 +13,18 @@ import (
 	"example.com/m/internal/api/v1/infrastructure/router"
 	"example.com/m/internal/config"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
+func loadEnv() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+}
+
 func main() {
+	loadEnv()
 	config.InitConfig()
 	database.ConnectToDatabase()
 	cache.ConnectToRedis()

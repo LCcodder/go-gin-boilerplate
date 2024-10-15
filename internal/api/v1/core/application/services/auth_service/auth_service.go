@@ -71,11 +71,10 @@ func (s *AuthService) Authorize(ctx context.Context, email string, password stri
 
 func (s *AuthService) CheckTokenExistance(ctx context.Context, email string, token string) *errorz.Error_ {
 	t, err := s.r.GetByEmail(&ctx, email)
-	fmt.Println(*t)
 	if err != nil {
 		return &errorz.ErrServiceUnavailable
 	}
-	if *t != token {
+	if t == nil || *t != token {
 		return &errorz.ErrAuthInvalidToken
 	}
 	return nil
