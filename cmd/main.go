@@ -23,6 +23,7 @@ func loadEnv() {
 	}
 }
 
+
 func main() {
 	loadEnv()
 	config.InitConfig()
@@ -38,9 +39,10 @@ func main() {
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
 	userController := controllers.NewUserController(userService)
 	authController := controllers.NewAuthController(authService)
+	metricController := controllers.NewMetricController()
 	r := gin.Default()
 
-	router.BindRoutes(r, authMiddleware, userController, authController)
+	router.BindRoutes(r, authMiddleware, userController, authController, metricController)
 
-	r.Run("localhost:8000")
+	r.Run(":8000")
 }
