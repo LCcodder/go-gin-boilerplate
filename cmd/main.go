@@ -38,9 +38,10 @@ func main() {
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
 	userController := controllers.NewUserController(userService)
 	authController := controllers.NewAuthController(authService)
+	metricController := controllers.NewMetricController()
 	r := gin.Default()
 
-	router.BindRoutes(r, authMiddleware, userController, authController)
+	router.BindRoutes(r, authMiddleware, userController, authController, metricController)
 
 	r.Run(":8000")
 }
