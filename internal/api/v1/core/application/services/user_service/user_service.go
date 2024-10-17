@@ -10,20 +10,20 @@ import (
 )
 
 type UserService struct {
-	r repositories.UserRepository
+	ur repositories.UserRepository
 }
 
-func NewUserService(repo *repositories.UserRepository) *UserService {
-	return &UserService{r: *repo}
+func NewUserService(ur *repositories.UserRepository) *UserService {
+	return &UserService{ur: *ur}
 }
 
 func (s *UserService) isUserUnique(email string, username string) (*bool, *errorz.Error_) {
-	foundUserByEmail, err := s.r.GetByEmail(&email)
+	foundUserByEmail, err := s.ur.GetByEmail(&email)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
 
-	foundUserByUsername, err := s.r.GetByUsername(&username)
+	foundUserByUsername, err := s.ur.GetByUsername(&username)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
@@ -48,7 +48,7 @@ func (s *UserService) CreateUser(ctx context.Context, u dto.CreateUserDto) (*dto
 	userToCreate := utils.CreateUserTimestamps(&u)
 	userToCreate.Password, _ = utils.HashPassword(userToCreate.Password)
 
-	err := s.r.Create(&userToCreate)
+	err := s.ur.Create(&userToCreate)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
@@ -57,7 +57,7 @@ func (s *UserService) CreateUser(ctx context.Context, u dto.CreateUserDto) (*dto
 }
 
 func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*dto.UserDto, *errorz.Error_) {
-	u, err := s.r.GetByEmail(&email)
+	u, err := s.ur.GetByEmail(&email)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
@@ -70,7 +70,7 @@ func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*dto.Us
 }
 
 func (s *UserService) GetUserByUsername(ctx context.Context, username string) (*dto.UserDto, *errorz.Error_) {
-	u, err := s.r.GetByUsername(&username)
+	u, err := s.ur.GetByUsername(&username)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
@@ -98,7 +98,7 @@ func (s *UserService) UpdateUserByEmail(ctx context.Context, email string, u dto
 
 	utils.UpdateUserTimestamps(&u)
 
-	if err := s.r.UpdateByEmail(&email, &u); err != nil {
+	if err := s.ur.UpdateByEmail(&email, &u); err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
 

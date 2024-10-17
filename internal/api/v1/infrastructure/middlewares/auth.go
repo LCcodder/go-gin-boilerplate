@@ -7,12 +7,12 @@ import (
 )
 
 type AuthMiddleware struct {
-	s auth_service.AuthService
+	as auth_service.AuthService
 }
 
-func NewAuthMiddleware(s *auth_service.AuthService) *AuthMiddleware {
+func NewAuthMiddleware(as *auth_service.AuthService) *AuthMiddleware {
 	return &AuthMiddleware{
-		s: *s,
+		as: *as,
 	}
 }
 
@@ -42,7 +42,7 @@ func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
 
 		email := payload["email"].(string)
 
-		exception := m.s.CheckTokenExistance(c, email, *token)
+		exception := m.as.CheckTokenExistance(c, email, *token)
 		if exception != nil {
 			c.JSON(int(exception.StatusCode), exception)
 			c.Abort()

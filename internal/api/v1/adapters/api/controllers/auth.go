@@ -8,12 +8,12 @@ import (
 )
 
 type AuthController struct {
-	s auth_service.AuthService
+	as auth_service.AuthService
 }
 
-func NewAuthController(s *auth_service.AuthService) *AuthController {
+func NewAuthController(as *auth_service.AuthService) *AuthController {
 	return &AuthController{
-		s: *s,
+		as: *as,
 	}
 }
 
@@ -24,7 +24,7 @@ func (c *AuthController) AuthorizeUser(ctx *gin.Context) {
 		return
 	}
 
-	t, err := c.s.Authorize(ctx, credentials.Email, credentials.Password)
+	t, err := c.as.Authorize(ctx, credentials.Email, credentials.Password)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
@@ -54,7 +54,7 @@ func (c *AuthController) ChangePassword(ctx *gin.Context) {
 	}
 	email := p["email"].(string)
 
-	if err := c.s.ChangePassword(ctx, email, passwords.OldPassword, passwords.NewPassword); err != nil {
+	if err := c.as.ChangePassword(ctx, email, passwords.OldPassword, passwords.NewPassword); err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}

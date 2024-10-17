@@ -8,12 +8,12 @@ import (
 )
 
 type UserController struct {
-	s user_service.UserService
+	us user_service.UserService
 }
 
 func NewUserController(s *user_service.UserService) *UserController {
 	return &UserController{
-		s: *s,
+		us: *s,
 	}
 }
 
@@ -24,7 +24,7 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	u, err := c.s.CreateUser(ctx, user)
+	u, err := c.us.CreateUser(ctx, user)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
@@ -36,7 +36,7 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 func (c *UserController) GetUserByUsername(ctx *gin.Context) {
 	username := ctx.Param("username")
 
-	u, err := c.s.GetUserByUsername(ctx, username)
+	u, err := c.us.GetUserByUsername(ctx, username)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
@@ -62,7 +62,7 @@ func (c *UserController) GetUserProfile(ctx *gin.Context) {
 
 	username := p["username"].(string)
 
-	u, err := c.s.GetUserByUsername(ctx, username)
+	u, err := c.us.GetUserByUsername(ctx, username)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
@@ -94,7 +94,7 @@ func (c *UserController) UpdateUserProfile(ctx *gin.Context) {
 		return
 	}
 
-	updatedUser, err := c.s.UpdateUserByEmail(ctx, email, updateData)
+	updatedUser, err := c.us.UpdateUserByEmail(ctx, email, updateData)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return

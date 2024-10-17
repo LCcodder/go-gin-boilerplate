@@ -12,9 +12,9 @@ type TokenRepository struct {
 	rdb *redis.Client
 }
 
-func NewTokenRepository(r *redis.Client) *TokenRepository {
+func NewTokenRepository(rdb *redis.Client) *TokenRepository {
 	return &TokenRepository{
-		rdb: r,
+		rdb: rdb,
 	}
 }
 

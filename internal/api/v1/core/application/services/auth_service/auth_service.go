@@ -16,14 +16,14 @@ import (
 )
 
 type AuthService struct {
-	s user_service.UserService
-	r *repositories.TokenRepository
+	us user_service.UserService
+	tr *repositories.TokenRepository
 }
 
-func NewAuthService(s *user_service.UserService, r *repositories.TokenRepository) *AuthService {
+func NewAuthService(us *user_service.UserService, tr *repositories.TokenRepository) *AuthService {
 	return &AuthService{
-		s: *s,
-		r: r,
+		us: *us,
+		tr: tr,
 	}
 }
 
@@ -44,7 +44,7 @@ func generateAndSignToken(email string, username string) (*string, error) {
 }
 
 func (s *AuthService) Authorize(ctx context.Context, email string, password string) (*string, *errorz.Error_) {
-	u, exception := s.s.GetUserByEmail(ctx, email)
+	u, exception := s.us.GetUserByEmail(ctx, email)
 	if exception != nil {
 		if exception.StatusCode == 404 {
 			return nil, &errorz.ErrAuthWrongCredentials
@@ -61,7 +61,7 @@ func (s *AuthService) Authorize(ctx context.Context, email string, password stri
 		return nil, &errorz.ErrServiceUnavailable
 	}
 
-	err = s.r.Set(&ctx, email, *token)
+	err = s.tr.Set(&ctx, email, *token)
 	if err != nil {
 		return nil, &errorz.ErrServiceUnavailable
 	}
@@ -70,7 +70,7 @@ func (s *AuthService) Authorize(ctx context.Context, email string, password stri
 }
 
 func (s *AuthService) CheckTokenExistance(ctx context.Context, email string, token string) *errorz.Error_ {
-	t, err := s.r.GetByEmail(&ctx, email)
+	t, err := s.tr.GetByEmail(&ctx, email)
 	if err != nil {
 		return &errorz.ErrServiceUnavailable
 	}
@@ -84,7 +84,7 @@ func (s *AuthService) ChangePassword(ctx context.Context, email string, oldPassw
 		return &errorz.ErrAuthWrongCredentials
 	}
 
-	u, exception := s.s.GetUserByEmail(ctx, email)
+	u, exception := s.us.GetUserByEmail(ctx, email)
 	if exception != nil {
 		if exception.StatusCode == 404 {
 			return &errorz.ErrAuthWrongCredentials
@@ -102,14 +102,14 @@ func (s *AuthService) ChangePassword(ctx context.Context, email string, oldPassw
 		return &errorz.ErrServiceUnavailable
 	}
 
-	_, exception = s.s.UpdateUserByEmail(ctx, email, dto.UpdateUserDto{
+	_, exception = s.us.UpdateUserByEmail(ctx, email, dto.UpdateUserDto{
 		Password: newHashedPassword,
 	})
 	if exception != nil {
 		return exception
 	}
 
-	err = s.r.DeleteByEmail(&ctx, email)
+	err = s.tr.DeleteByEmail(&ctx, email)
 	if err != nil {
 		return &errorz.ErrServiceUnavailable
 	}
