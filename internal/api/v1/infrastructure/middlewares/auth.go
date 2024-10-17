@@ -39,11 +39,12 @@ func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
 		email := payload["email"].(string)
 
-		err = m.s.CheckTokenExistance(c, email, *token)
-		if err != nil {
-			c.JSON(int(err.StatusCode), err)
+		exception := m.s.CheckTokenExistance(c, email, *token)
+		if exception != nil {
+			c.JSON(int(exception.StatusCode), exception)
 			c.Abort()
 			return
 		}

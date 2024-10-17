@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 
 	"example.com/m/internal/config"
 	"github.com/redis/go-redis/v9"
@@ -19,10 +20,10 @@ func NewTokenRepository(r *redis.Client) *TokenRepository {
 
 func (r *TokenRepository) GetByEmail(ctx *context.Context, email string) (*string, error) {
 	v, err := r.rdb.Get(*ctx, email).Result()
-	if err != nil {
-		if err == redis.Nil {
-			return nil, nil
-		}
+
+	if errors.Is(err, redis.Nil) {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 

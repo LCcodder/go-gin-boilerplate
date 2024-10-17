@@ -17,7 +17,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func init() {
+func loadEnv() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
@@ -25,6 +25,7 @@ func init() {
 
 
 func main() {
+	loadEnv()
 	config.InitConfig()
 	database.ConnectToDatabase()
 	cache.ConnectToRedis()

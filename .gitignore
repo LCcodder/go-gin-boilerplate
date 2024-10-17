@@ -1,2 +1,3 @@
 .env
-db.env
+.env
+/cmd/.env

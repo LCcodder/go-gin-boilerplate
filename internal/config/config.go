@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"time"
 	"os"
 )
@@ -27,9 +28,9 @@ func InitConfig() {
 			os.Getenv("DB_USER"),
 			os.Getenv("DB_PASSWORD"),
 			os.Getenv("DB_NAME")),
-		JWTSecret:             "dasmkdasmkda",
+		JWTSecret:             os.Getenv("JWT_SECRET"),
 		JWTExpiration:         time.Hour * 24 * 90,
-		RedisConnectionString: "localhost:6379",
+		RedisConnectionString: os.Getenv("REDIS_CONNECTION"),
 		RedisPassword:         "",
 	}
 }
