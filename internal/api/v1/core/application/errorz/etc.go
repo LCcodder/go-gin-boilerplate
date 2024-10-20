@@ -6,6 +6,6 @@ var ErrDatabaseError = Error_{
 }
 
 var ErrServiceUnavailable = Error_{
-	StatusCode: 503,
+	StatusCode: 500,
 	Message:    "Service unavailable",
 }

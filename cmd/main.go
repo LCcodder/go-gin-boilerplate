@@ -23,7 +23,6 @@ func loadEnv() {
 	}
 }
 
-
 func main() {
 	loadEnv()
 	config.InitConfig()

@@ -1,0 +1,302 @@
+definitions:
+  dto.AuthorizeUserDto:
+    properties:
+      email:
+        maxLength: 64
+        minLength: 6
+        type: string
+      password:
+        maxLength: 64
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.ChangeUserPasswordDto:
+    properties:
+      new_password:
+        maxLength: 64
+        minLength: 6
+        type: string
+      old_password:
+        maxLength: 64
+        minLength: 6
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  dto.CreateUserDto:
+    properties:
+      bio:
+        maxLength: 100
+        type: string
+      birthday:
+        maxLength: 10
+        minLength: 8
+        type: string
+      email:
+        maxLength: 64
+        minLength: 6
+        type: string
+      password:
+        maxLength: 64
+        minLength: 6
+        type: string
+      sex:
+        maxLength: 6
+        minLength: 4
+        type: string
+      username:
+        maxLength: 32
+        minLength: 6
+        type: string
+    required:
+    - bio
+    - birthday
+    - email
+    - password
+    - sex
+    - username
+    type: object
+  dto.GetUserDto:
+    properties:
+      bio:
+        type: string
+      birthday:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      sex:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.UpdateUserDto:
+    properties:
+      bio:
+        maxLength: 100
+        type: string
+      birthday:
+        maxLength: 10
+        minLength: 8
+        type: string
+      email:
+        maxLength: 64
+        minLength: 6
+        type: string
+      password:
+        type: string
+      sex:
+        maxLength: 6
+        minLength: 4
+        type: string
+      updated_at:
+        description: sets in service automatically
+        type: string
+      username:
+        maxLength: 32
+        minLength: 6
+        type: string
+    type: object
+  errorz.Error_:
+    properties:
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      description: Authorizes user and returns JWT
+      parameters:
+      - description: User credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AuthorizeUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetUserDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+      tags:
+      - auth
+  /auth/changePassword:
+    post:
+      consumes:
+      - application/json
+      description: Changes user password and makes current token invalid
+      parameters:
+      - description: User passwords
+        in: body
+        name: passwords
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ChangeUserPasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+      tags:
+      - auth
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Creates new user and returns it
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.GetUserDto'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+      tags:
+      - user
+  /users/{username}:
+    get:
+      description: Returns user profile by username (requires JWT in "Bearer" header)
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetUserDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+      tags:
+      - user
+  /users/me:
+    get:
+      description: Returns user profile (requires JWT in "Bearer" header)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetUserDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+      tags:
+      - user
+    patch:
+      description: Updates user profile and returns it (requires JWT in "Bearer" header)
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetUserDto'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/errorz.Error_'
+      tags:
+      - user
+swagger: "2.0"
