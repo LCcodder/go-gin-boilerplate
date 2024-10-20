@@ -20,6 +20,7 @@
 6. `PATCH:/api/v1/users/me` - updates current user profile *(requires token in Bearer header)*
 
 + Visit http://localhost:8000/swagger/index.html to see `Swagger` specification
++ Use `swag init -g ./cmd/main.go -o docs` to auto-update `openapi.yaml` 
 ---
 ### Launch guide:
 + Make sure that your `.env` looks like this:
