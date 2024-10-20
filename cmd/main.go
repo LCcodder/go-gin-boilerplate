@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"example.com/m/internal/api/v1/adapters/api/controllers"
+	"example.com/m/internal/api/v1/adapters/controllers"
 	"example.com/m/internal/api/v1/adapters/repositories"
 	"example.com/m/internal/api/v1/core/application/services/auth_service"
 	"example.com/m/internal/api/v1/core/application/services/user_service"

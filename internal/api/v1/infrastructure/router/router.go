@@ -2,7 +2,7 @@ package router
 
 import (
 	docs "example.com/m/docs"
-	"example.com/m/internal/api/v1/adapters/api/controllers"
+	"example.com/m/internal/api/v1/adapters/controllers"
 	"example.com/m/internal/api/v1/infrastructure/middlewares"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
