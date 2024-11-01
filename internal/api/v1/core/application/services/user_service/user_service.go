@@ -6,6 +6,7 @@ import (
 	"example.com/m/internal/api/v1/adapters/repositories"
 	"example.com/m/internal/api/v1/core/application/dto"
 	"example.com/m/internal/api/v1/core/application/errorz"
+	"example.com/m/internal/api/v1/infrastructure/prom"
 	"example.com/m/internal/api/v1/utils"
 )
 
@@ -53,6 +54,7 @@ func (s *UserService) CreateUser(ctx context.Context, u dto.CreateUserDto) (*dto
 		return nil, &errorz.ErrDatabaseError
 	}
 
+	prom.UserCreatedCounter.WithLabelValues("method").Inc()
 	return &userToCreate, nil
 }
 
