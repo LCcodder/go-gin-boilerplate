@@ -15,6 +15,7 @@ services:
       depends_on:
         - prometheus
         - grafana
+        - db
       ports:
         - 8000:8000
   

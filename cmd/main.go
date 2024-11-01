@@ -10,6 +10,7 @@ import (
 	"example.com/m/internal/api/v1/infrastructure/cache"
 	database "example.com/m/internal/api/v1/infrastructure/database"
 	"example.com/m/internal/api/v1/infrastructure/middlewares"
+	"example.com/m/internal/api/v1/infrastructure/prom"
 	"example.com/m/internal/api/v1/infrastructure/router"
 	"example.com/m/internal/config"
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,7 @@ func main() {
 	config.InitConfig()
 	database.ConnectToDatabase()
 	cache.ConnectToRedis()
+	prom.RegisterPrometheusMetrics()
 
 	defer database.Db.Close()
 

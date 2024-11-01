@@ -4,9 +4,10 @@ global:
     monitor: 'codelab-monitor'
 
 scrape_configs:
-  - job_name: 'prometheus'
-
-    scrape_interval: 5s
-
+  - job_name: 'prod'
+    metrics_path: "/api/v1/metrics"
     static_configs:
-      - targets: ['localhost:9090', 'prod:8000']
+      - targets: ['prod:8000']
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
