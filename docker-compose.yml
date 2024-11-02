@@ -2,11 +2,13 @@ services:
     prometheus:
         image: prom/prometheus
         ports:
-            - "9090:9090"
+          - "9090:9090"
         volumes:
-            - ./prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
+          - ./prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml
         command:
           - '--config.file=/etc/prometheus/prometheus.yml'
+        networks:
+          - net1
 
     prod:
       build:
@@ -15,24 +17,81 @@ services:
       depends_on:
         - prometheus
         - grafana
-        - db
+        - postgres
+        - redis
       ports:
         - 8000:8000
+      environment:
+        - DB_HOST=postgres
+        - DB_PORT=5432
+        - DB_USER=postgres
+        - DB_PASSWORD=postgres
+        - DB_NAME=postgres
+        - JWT_SECRET=dfnjkahfjdasnfjksdnjvdnsk
+        - REDIS_CONNECTION=redis://redis:6379/0
+      networks:
+        - net1
   
     grafana:
       image: grafana/grafana
       container_name: grafana
       ports:
         - 3000:3000
+      networks:
+        - net1
 
-    db:
-        image: postgres:15-alpine
-        expose:
-          - "4596"
-        volumes:
-          - ./db/postgresql:/var/lib/postgresql
-        command: -p 4596
-        ports:
-          - "4596:4596"
-        env_file:
-          - db.env
+    postgres:
+      image: postgres:14.1-alpine
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_DB=postgres
+      ports:
+        - 5432:5432
+      volumes: 
+        - postgres:/var/lib/postgresql/data
+      networks:
+        - net1
+
+    redis:
+      image: redis:latest
+      restart: always
+      ports:
+        - "6379:6379"
+      volumes:
+        - cache:/data
+      environment:
+        - REDIS_PORT=6379
+        - REDIS_DATABASES=16
+      depends_on: 
+        - postgres
+      networks:
+        - net1
+
+    pgadmin:
+      image: dpage/pgadmin4:4.23
+      environment:
+        PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+        PGADMIN_DEFAULT_PASSWORD: password
+        PGADMIN_LISTEN_PORT: 80
+      ports:
+        - 5050:80
+      volumes:
+        - pgadmin:/var/lib/pgadmin
+      depends_on:
+        - postgres
+      networks:
+        - net1
+
+networks:
+  net1:
+    name: net1
+    driver: bridge
+
+volumes:
+  postgres:
+    name: postgres
+    driver: local
+  pgadmin:
+  cache:
+    driver: local
