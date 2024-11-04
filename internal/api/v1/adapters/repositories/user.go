@@ -35,8 +35,8 @@ func (r *UserRepository) GetByUsername(username *string) (*dto.UserDto, error) {
 		"username": *username,
 	}).ToSQL()
 
-	var u dto.UserDto
-	err := r.db.QueryRow(query).Scan(&u.Email, &u.Username, &u.Birthday, &u.Sex, &u.Bio, &u.Password, &u.CreatedAt, &u.UpdatedAt)
+	var user dto.UserDto
+	err := r.db.QueryRow(query).Scan(&user.Email, &user.Username, &user.Birthday, &user.Sex, &user.Bio, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}
@@ -44,7 +44,7 @@ func (r *UserRepository) GetByUsername(username *string) (*dto.UserDto, error) {
 		return nil, err
 	}
 
-	return &u, nil
+	return &user, nil
 }
 
 func (r *UserRepository) GetByEmail(email *string) (*dto.UserDto, error) {
@@ -52,8 +52,8 @@ func (r *UserRepository) GetByEmail(email *string) (*dto.UserDto, error) {
 		"email": *email,
 	}).ToSQL()
 
-	var u dto.UserDto
-	err := r.db.QueryRow(query).Scan(&u.Email, &u.Username, &u.Birthday, &u.Sex, &u.Bio, &u.Password, &u.CreatedAt, &u.UpdatedAt)
+	var user dto.UserDto
+	err := r.db.QueryRow(query).Scan(&user.Email, &user.Username, &user.Birthday, &user.Sex, &user.Bio, &user.Password, &user.CreatedAt, &user.UpdatedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}
@@ -61,7 +61,7 @@ func (r *UserRepository) GetByEmail(email *string) (*dto.UserDto, error) {
 		return nil, err
 	}
 
-	return &u, nil
+	return &user, nil
 }
 
 func (r *UserRepository) UpdateByEmail(email *string, u *dto.UpdateUserDto) error {

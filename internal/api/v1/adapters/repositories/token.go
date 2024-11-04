@@ -19,7 +19,7 @@ func NewTokenRepository(rdb *redis.Client) *TokenRepository {
 }
 
 func (r *TokenRepository) GetByEmail(ctx *context.Context, email string) (*string, error) {
-	v, err := r.rdb.Get(*ctx, email).Result()
+	token, err := r.rdb.Get(*ctx, email).Result()
 
 	if errors.Is(err, redis.Nil) {
 		return nil, nil
@@ -27,7 +27,7 @@ func (r *TokenRepository) GetByEmail(ctx *context.Context, email string) (*strin
 		return nil, err
 	}
 
-	return &v, nil
+	return &token, nil
 }
 
 func (r *TokenRepository) Set(ctx *context.Context, email string, token string) error {

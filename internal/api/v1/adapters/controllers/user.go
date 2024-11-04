@@ -38,12 +38,12 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	u, err := c.us.CreateUser(ctx, user)
+	createdUser, err := c.us.CreateUser(ctx, user)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
-	userToReturn := utils.ExcludeUserCredentials(u)
+	userToReturn := utils.ExcludeUserCredentials(createdUser)
 	ctx.JSON(201, &userToReturn)
 }
 
@@ -61,13 +61,13 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 func (c *UserController) GetUserByUsername(ctx *gin.Context) {
 	username := ctx.Param("username")
 
-	u, err := c.us.GetUserByUsername(ctx, username)
+	user, err := c.us.GetUserByUsername(ctx, username)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
 
-	userToReturn := utils.ExcludeUserCredentials(u)
+	userToReturn := utils.ExcludeUserCredentials(user)
 
 	ctx.JSON(200, &userToReturn)
 }
@@ -83,27 +83,27 @@ func (c *UserController) GetUserByUsername(ctx *gin.Context) {
 // @Failure 401 {object} errorz.Error_
 // @Router /users/me [get]
 func (c *UserController) GetUserProfile(ctx *gin.Context) {
-	t, err := utils.ExtractTokenFromHeaders(ctx)
+	token, err := utils.ExtractTokenFromHeaders(ctx)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
 
-	p, err := utils.ExtractPayloadFromJWT(*t)
+	payload, err := utils.ExtractPayloadFromJWT(*token)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
 
-	username := p["username"].(string)
+	username := payload["username"].(string)
 
-	u, err := c.us.GetUserByUsername(ctx, username)
+	user, err := c.us.GetUserByUsername(ctx, username)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
 
-	userToReturn := utils.ExcludeUserCredentials(u)
+	userToReturn := utils.ExcludeUserCredentials(user)
 
 	ctx.JSON(200, &userToReturn)
 }
@@ -120,19 +120,19 @@ func (c *UserController) GetUserProfile(ctx *gin.Context) {
 // @Failure 401 {object} errorz.Error_
 // @Router /users/me [patch]
 func (c *UserController) UpdateUserProfile(ctx *gin.Context) {
-	t, err := utils.ExtractTokenFromHeaders(ctx)
+	token, err := utils.ExtractTokenFromHeaders(ctx)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
 
-	p, err := utils.ExtractPayloadFromJWT(*t)
+	payload, err := utils.ExtractPayloadFromJWT(*token)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
 
-	email := p["email"].(string)
+	email := payload["email"].(string)
 
 	var updateData dto.UpdateUserDto
 	if err := ctx.ShouldBindBodyWithJSON(&updateData); err != nil {

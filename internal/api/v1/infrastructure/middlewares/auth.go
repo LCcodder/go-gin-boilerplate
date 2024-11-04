@@ -20,7 +20,6 @@ func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		token, err := utils.ExtractTokenFromHeaders(c)
-
 		if err != nil {
 			c.JSON(int(err.StatusCode), err)
 			c.Abort()

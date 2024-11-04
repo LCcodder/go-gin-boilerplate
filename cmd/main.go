@@ -41,9 +41,9 @@ func main() {
 	userController := controllers.NewUserController(userService)
 	authController := controllers.NewAuthController(authService)
 	metricController := controllers.NewMetricController()
-	r := gin.Default()
+	engine := gin.Default()
 
-	router.BindRoutes(r, authMiddleware, userController, authController, metricController)
+	router.BindRoutes(engine, authMiddleware, userController, authController, metricController)
 
-	r.Run(":8000")
+	engine.Run(":8000")
 }

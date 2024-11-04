@@ -20,14 +20,14 @@ func ValidateTokenSignature(token string) *errorz.Error_ {
 }
 
 func ExtractPayloadFromJWT(token string) (jwt.MapClaims, *errorz.Error_) {
-	t, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+	parsedToken, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.Config.JWTSecret), nil
 	})
 	if err != nil {
 		return nil, &errorz.ErrAuthInvalidToken
 	}
 
-	if claims, ok := t.Claims.(jwt.MapClaims); ok && t.Valid {
+	if claims, ok := parsedToken.Claims.(jwt.MapClaims); ok && parsedToken.Valid {
 		return claims, nil
 	} else {
 		return nil, &errorz.ErrAuthInvalidToken

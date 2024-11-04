@@ -38,14 +38,14 @@ func (c *AuthController) AuthorizeUser(ctx *gin.Context) {
 		return
 	}
 
-	t, err := c.as.Authorize(ctx, credentials.Email, credentials.Password)
+	token, err := c.as.Authorize(ctx, credentials.Email, credentials.Password)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
 
 	ctx.JSON(200, gin.H{
-		"token": t,
+		"token": token,
 	})
 }
 
@@ -69,17 +69,17 @@ func (c *AuthController) ChangePassword(ctx *gin.Context) {
 		return
 	}
 
-	t, err := utils.ExtractTokenFromHeaders(ctx)
+	token, err := utils.ExtractTokenFromHeaders(ctx)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
-	p, err := utils.ExtractPayloadFromJWT(*t)
+	payload, err := utils.ExtractPayloadFromJWT(*token)
 	if err != nil {
 		ctx.JSON(int(err.StatusCode), err)
 		return
 	}
-	email := p["email"].(string)
+	email := payload["email"].(string)
 
 	if err := c.as.ChangePassword(ctx, email, passwords.OldPassword, passwords.NewPassword); err != nil {
 		ctx.JSON(int(err.StatusCode), err)

@@ -29,10 +29,7 @@ func (s *UserService) isUserUnique(email string, username string) (*bool, *error
 		return nil, &errorz.ErrDatabaseError
 	}
 
-	state := true
-	if foundUserByEmail != nil || foundUserByUsername != nil {
-		state = false
-	}
+	state := foundUserByEmail != nil || foundUserByUsername != nil
 
 	return &state, nil
 }
@@ -59,29 +56,29 @@ func (s *UserService) CreateUser(ctx context.Context, u dto.CreateUserDto) (*dto
 }
 
 func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*dto.UserDto, *errorz.Error_) {
-	u, err := s.ur.GetByEmail(&email)
+	user, err := s.ur.GetByEmail(&email)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
 
-	if u == nil {
+	if user == nil {
 		return nil, &errorz.ErrUserNotFound
 	}
 
-	return u, nil
+	return user, nil
 }
 
 func (s *UserService) GetUserByUsername(ctx context.Context, username string) (*dto.UserDto, *errorz.Error_) {
-	u, err := s.ur.GetByUsername(&username)
+	user, err := s.ur.GetByUsername(&username)
 	if err != nil {
 		return nil, &errorz.ErrDatabaseError
 	}
 
-	if u == nil {
+	if user == nil {
 		return nil, &errorz.ErrUserNotFound
 	}
 
-	return u, nil
+	return user, nil
 }
 
 func (s *UserService) UpdateUserByEmail(ctx context.Context, email string, u dto.UpdateUserDto) (*dto.UserDto, *errorz.Error_) {
