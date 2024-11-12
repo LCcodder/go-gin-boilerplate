@@ -35,15 +35,23 @@ func main() {
 
 	userRepository := repositories.NewUserRepository(database.Db)
 	tokenRepository := repositories.NewTokenRepository(cache.Redis)
+
 	userService := user_service.NewUserService(userRepository)
 	authService := auth_service.NewAuthService(userService, tokenRepository)
+
 	authMiddleware := middlewares.NewAuthMiddleware(authService)
+
 	userController := controllers.NewUserController(userService)
 	authController := controllers.NewAuthController(authService)
 	metricController := controllers.NewMetricController()
-	engine := gin.Default()
 
-	router.BindRoutes(engine, authMiddleware, userController, authController, metricController)
+	engine := gin.Default()
+	router := router.NewRouter(engine, authMiddleware)
+
+	router.BindAuthRoutes(authController)
+	router.BindMetricsRoutes(metricController)
+	router.BindUserRoutes(userController)
+	router.BindSwaggerRoutes()
 
 	engine.Run(":8000")
 }

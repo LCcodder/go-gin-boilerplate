@@ -1,4 +1,4 @@
-package errorz
+package exceptions
 
 var ErrUserAlreadyExists = Error_{
 	StatusCode: 400,

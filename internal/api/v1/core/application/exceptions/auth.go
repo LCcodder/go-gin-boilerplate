@@ -1,4 +1,4 @@
-package errorz
+package exceptions
 
 var ErrAuthWrongCredentials = Error_{
 	StatusCode: 401,

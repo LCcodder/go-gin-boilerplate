@@ -29,13 +29,6 @@ definitions:
     type: object
   dto.CreateUserDto:
     properties:
-      bio:
-        maxLength: 100
-        type: string
-      birthday:
-        maxLength: 10
-        minLength: 8
-        type: string
       email:
         maxLength: 64
         minLength: 6
@@ -44,33 +37,20 @@ definitions:
         maxLength: 64
         minLength: 6
         type: string
-      sex:
-        maxLength: 6
-        minLength: 4
-        type: string
       username:
         maxLength: 32
         minLength: 6
         type: string
     required:
-    - bio
-    - birthday
     - email
     - password
-    - sex
     - username
     type: object
   dto.GetUserDto:
     properties:
-      bio:
-        type: string
-      birthday:
-        type: string
       created_at:
         type: string
       email:
-        type: string
-      sex:
         type: string
       updated_at:
         type: string
@@ -79,22 +59,11 @@ definitions:
     type: object
   dto.UpdateUserDto:
     properties:
-      bio:
-        maxLength: 100
-        type: string
-      birthday:
-        maxLength: 10
-        minLength: 8
-        type: string
       email:
         maxLength: 64
         minLength: 6
         type: string
       password:
-        type: string
-      sex:
-        maxLength: 6
-        minLength: 4
         type: string
       updated_at:
         description: sets in service automatically
@@ -104,7 +73,7 @@ definitions:
         minLength: 6
         type: string
     type: object
-  errorz.Error_:
+  exceptions.Error_:
     properties:
       message:
         type: string
@@ -136,15 +105,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "503":
           description: Service Unavailable
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
       tags:
       - auth
   /auth/changePassword:
@@ -159,6 +128,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.ChangeUserPasswordDto'
+      - description: Bearer JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -167,19 +141,19 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "503":
           description: Service Unavailable
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
       tags:
       - auth
   /users:
@@ -204,15 +178,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "503":
           description: Service Unavailable
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
       tags:
       - user
   /users/{username}:
@@ -222,6 +196,11 @@ paths:
       - description: Username
         in: path
         name: username
+        required: true
+        type: string
+      - description: Bearer JWT token
+        in: header
+        name: Authorization
         required: true
         type: string
       produces:
@@ -234,20 +213,26 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "503":
           description: Service Unavailable
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
       tags:
       - user
   /users/me:
     get:
       description: Returns user profile (requires JWT in "Bearer" header)
+      parameters:
+      - description: Bearer JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -258,15 +243,15 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "503":
           description: Service Unavailable
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
       tags:
       - user
     patch:
@@ -278,6 +263,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/dto.UpdateUserDto'
+      - description: Bearer JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -288,15 +278,15 @@ paths:
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
         "503":
           description: Service Unavailable
           schema:
-            $ref: '#/definitions/errorz.Error_'
+            $ref: '#/definitions/exceptions.Error_'
       tags:
       - user
 swagger: "2.0"

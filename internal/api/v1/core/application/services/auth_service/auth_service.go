@@ -6,7 +6,7 @@ import (
 
 	"example.com/m/internal/api/v1/adapters/repositories"
 	"example.com/m/internal/api/v1/core/application/dto"
-	"example.com/m/internal/api/v1/core/application/errorz"
+	"example.com/m/internal/api/v1/core/application/exceptions"
 	"example.com/m/internal/api/v1/core/application/services/user_service"
 	"example.com/m/internal/api/v1/utils"
 	"example.com/m/internal/config"
@@ -42,63 +42,63 @@ func generateAndSignToken(email string, username string) (*string, error) {
 	return &tokenString, nil
 }
 
-func (s *AuthService) Authorize(ctx context.Context, email string, password string) (*string, *errorz.Error_) {
+func (s *AuthService) Authorize(ctx context.Context, email string, password string) (*string, *exceptions.Error_) {
 	user, exception := s.us.GetUserByEmail(ctx, email)
 	if exception != nil {
 		if exception.StatusCode == 404 {
-			return nil, &errorz.ErrAuthWrongCredentials
+			return nil, &exceptions.ErrAuthWrongCredentials
 		}
 		return nil, exception
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return nil, &errorz.ErrAuthWrongCredentials
+		return nil, &exceptions.ErrAuthWrongCredentials
 	}
 
 	token, err := generateAndSignToken(user.Email, user.Username)
 	if err != nil {
-		return nil, &errorz.ErrServiceUnavailable
+		return nil, &exceptions.ErrServiceUnavailable
 	}
 
 	err = s.tr.Set(&ctx, email, *token)
 	if err != nil {
-		return nil, &errorz.ErrServiceUnavailable
+		return nil, &exceptions.ErrServiceUnavailable
 	}
 
 	return token, nil
 }
 
-func (s *AuthService) CheckTokenExistance(ctx context.Context, email string, token string) *errorz.Error_ {
+func (s *AuthService) CheckTokenExistance(ctx context.Context, email string, token string) *exceptions.Error_ {
 	foundToken, err := s.tr.GetByEmail(&ctx, email)
 	if err != nil {
-		return &errorz.ErrServiceUnavailable
+		return &exceptions.ErrServiceUnavailable
 	}
 
 	if foundToken == nil || *foundToken != token {
-		return &errorz.ErrAuthInvalidToken
+		return &exceptions.ErrAuthInvalidToken
 	}
 	return nil
 }
-func (s *AuthService) ChangePassword(ctx context.Context, email string, oldPassword string, newPassword string) *errorz.Error_ {
+func (s *AuthService) ChangePassword(ctx context.Context, email string, oldPassword string, newPassword string) *exceptions.Error_ {
 	if oldPassword == newPassword {
-		return &errorz.ErrAuthWrongCredentials
+		return &exceptions.ErrAuthWrongCredentials
 	}
 
 	user, exception := s.us.GetUserByEmail(ctx, email)
 	if exception != nil {
 		if exception.StatusCode == 404 {
-			return &errorz.ErrAuthWrongCredentials
+			return &exceptions.ErrAuthWrongCredentials
 		}
 		return exception
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword)); err != nil {
-		return &errorz.ErrAuthWrongCredentials
+		return &exceptions.ErrAuthWrongCredentials
 	}
 
 	newHashedPassword, err := utils.HashPassword(newPassword)
 	if err != nil {
-		return &errorz.ErrServiceUnavailable
+		return &exceptions.ErrServiceUnavailable
 	}
 
 	_, exception = s.us.UpdateUserByEmail(ctx, email, dto.UpdateUserDto{
@@ -110,7 +110,7 @@ func (s *AuthService) ChangePassword(ctx context.Context, email string, oldPassw
 
 	err = s.tr.DeleteByEmail(&ctx, email)
 	if err != nil {
-		return &errorz.ErrServiceUnavailable
+		return &exceptions.ErrServiceUnavailable
 	}
 
 	return nil

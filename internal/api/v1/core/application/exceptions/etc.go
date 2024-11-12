@@ -1,4 +1,4 @@
-package errorz
+package exceptions
 
 var ErrDatabaseError = Error_{
 	StatusCode: 503,

@@ -48,19 +48,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "503": {
                         "description": "Service Unavailable",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     }
                 }
@@ -87,6 +87,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.ChangeUserPasswordDto"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -96,25 +103,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "503": {
                         "description": "Service Unavailable",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     }
                 }
@@ -153,19 +160,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "503": {
                         "description": "Service Unavailable",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     }
                 }
@@ -180,6 +187,15 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -190,19 +206,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "503": {
                         "description": "Service Unavailable",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     }
                 }
@@ -224,6 +240,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.UpdateUserDto"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -236,19 +259,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "503": {
                         "description": "Service Unavailable",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     }
                 }
@@ -270,6 +293,13 @@ const docTemplate = `{
                         "name": "username",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -282,19 +312,19 @@ const docTemplate = `{
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     },
                     "503": {
                         "description": "Service Unavailable",
                         "schema": {
-                            "$ref": "#/definitions/errorz.Error_"
+                            "$ref": "#/definitions/exceptions.Error_"
                         }
                     }
                 }
@@ -343,23 +373,11 @@ const docTemplate = `{
         "dto.CreateUserDto": {
             "type": "object",
             "required": [
-                "bio",
-                "birthday",
                 "email",
                 "password",
-                "sex",
                 "username"
             ],
             "properties": {
-                "bio": {
-                    "type": "string",
-                    "maxLength": 100
-                },
-                "birthday": {
-                    "type": "string",
-                    "maxLength": 10,
-                    "minLength": 8
-                },
                 "email": {
                     "type": "string",
                     "maxLength": 64,
@@ -369,11 +387,6 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 64,
                     "minLength": 6
-                },
-                "sex": {
-                    "type": "string",
-                    "maxLength": 6,
-                    "minLength": 4
                 },
                 "username": {
                     "type": "string",
@@ -385,19 +398,10 @@ const docTemplate = `{
         "dto.GetUserDto": {
             "type": "object",
             "properties": {
-                "bio": {
-                    "type": "string"
-                },
-                "birthday": {
-                    "type": "string"
-                },
                 "created_at": {
                     "type": "string"
                 },
                 "email": {
-                    "type": "string"
-                },
-                "sex": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -411,15 +415,6 @@ const docTemplate = `{
         "dto.UpdateUserDto": {
             "type": "object",
             "properties": {
-                "bio": {
-                    "type": "string",
-                    "maxLength": 100
-                },
-                "birthday": {
-                    "type": "string",
-                    "maxLength": 10,
-                    "minLength": 8
-                },
                 "email": {
                     "type": "string",
                     "maxLength": 64,
@@ -427,11 +422,6 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
-                },
-                "sex": {
-                    "type": "string",
-                    "maxLength": 6,
-                    "minLength": 4
                 },
                 "updated_at": {
                     "description": "sets in service automatically",
@@ -444,7 +434,7 @@ const docTemplate = `{
                 }
             }
         },
-        "errorz.Error_": {
+        "exceptions.Error_": {
             "type": "object",
             "properties": {
                 "message": {

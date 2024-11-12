@@ -7,7 +7,7 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Grafana](https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)
 ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white)
-
+![Firebase](https://img.shields.io/badge/firebase-a08021?style=for-the-badge&logo=firebase&logoColor=ffcd34)
 
 ### Small **REST API** template written in `Golang` using `Gin`, `PostgreSQL`, `JWT` and `Redis`. Project: user profile *CRUD* with authorization, authentication and token validation, `Swagger` generator and metrics gainer 
 ---
@@ -23,15 +23,7 @@
 + Use `swag init -g ./cmd/main.go -o docs` to auto-update `openapi.yaml` 
 ---
 ### Launch guide:
-+ Make sure that your `.env` looks like this:
++ To launch webapp run:
+```Shell
+docker compose up --build
 ```
-DB_HOST=localhost
-DB_PORT=5432
-DB_PASSWORD=password
-DB_USER=postgres
-DB_NAME=demo
-JWT_SECRET=secret
-REDIS_CONNECTION=localhost:6379
-```
-+ Make sure that you running Redis and PostgreSQL on your machine
-+ Run `go run main.go` in terminal

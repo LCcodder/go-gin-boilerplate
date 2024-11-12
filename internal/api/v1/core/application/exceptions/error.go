@@ -1,4 +1,4 @@
-package errorz
+package exceptions
 
 type Error_ struct {
 	StatusCode uint   `json:"status_code"`

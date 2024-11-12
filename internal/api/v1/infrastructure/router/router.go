@@ -11,21 +11,40 @@ import (
 
 const prefix string = "/api/v1"
 
-func BindRoutes(e *gin.Engine, a *middlewares.AuthMiddleware, uc *controllers.UserController, ac *controllers.AuthController, m *controllers.MetricController) {
-	docs.SwaggerInfo.BasePath = "/api/v1"
-	docs.SwaggerInfo.Version = "v1"
+type Router struct {
+	e  *gin.Engine
+	am middlewares.AuthMiddleware
+}
 
-	e.POST(prefix+"/users", uc.CreateUser)
-	e.POST(prefix+"/auth", ac.AuthorizeUser)
-	e.POST(prefix+"/auth/changePassword", a.Authenticate(), ac.ChangePassword)
-	e.GET(prefix+"/users/:username", a.Authenticate(), uc.GetUserByUsername)
-	e.GET(prefix+"/users/me", a.Authenticate(), uc.GetUserProfile)
-	e.PATCH(prefix+"/users/me", a.Authenticate(), uc.UpdateUserProfile)
-	e.GET(prefix+"/metrics", m.GetMetrics())
+func NewRouter(e *gin.Engine, am *middlewares.AuthMiddleware) *Router {
+	return &Router{
+		e:  e,
+		am: *am,
+	}
+}
+
+func (r *Router) BindUserRoutes(uc *controllers.UserController) {
+	r.e.POST(prefix+"/users", uc.CreateUser)
+	r.e.GET(prefix+"/users/:username", r.am.Authenticate(), uc.GetUserByUsername)
+	r.e.GET(prefix+"/users/me", r.am.Authenticate(), uc.GetUserProfile)
+	r.e.PATCH(prefix+"/users/me", r.am.Authenticate(), uc.UpdateUserProfile)
+}
+
+func (r *Router) BindAuthRoutes(ac *controllers.AuthController) {
+	r.e.POST(prefix+"/auth", ac.AuthorizeUser)
+	r.e.PATCH(prefix+"/auth/changePassword", r.am.Authenticate(), ac.ChangePassword)
+}
+
+func (r *Router) BindSwaggerRoutes() {
+	docs.SwaggerInfo.BasePath = prefix
+	docs.SwaggerInfo.Version = "v1"
 
 	ginSwagger.WrapHandler(swaggerfiles.Handler,
 		ginSwagger.URL("http://localhost:8000/swagger/doc.json"),
 		ginSwagger.DefaultModelsExpandDepth(-1))
-	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+}
 
+func (r *Router) BindMetricsRoutes(m *controllers.MetricController) {
+	r.e.GET(prefix+"/metrics", m.GetMetrics())
 }

@@ -27,9 +27,9 @@ func NewUserController(s *user_service.UserService) *UserController {
 // @Produce json
 // @Param user body dto.CreateUserDto true "User data"
 // @Success 201 {object} dto.GetUserDto
-// @Failure 500 {object} errorz.Error_
-// @Failure 503 {object} errorz.Error_
-// @Failure 400 {object} errorz.Error_
+// @Failure 500 {object} exceptions.Error_
+// @Failure 503 {object} exceptions.Error_
+// @Failure 400 {object} exceptions.Error_
 // @Router /users [post]
 func (c *UserController) CreateUser(ctx *gin.Context) {
 	var user dto.CreateUserDto
@@ -54,9 +54,10 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 // @Produce json
 // @Param username path string true "Username"
 // @Success 200 {object} dto.GetUserDto
-// @Failure 500 {object} errorz.Error_
-// @Failure 503 {object} errorz.Error_
-// @Failure 401 {object} errorz.Error_
+// @Failure 500 {object} exceptions.Error_
+// @Failure 503 {object} exceptions.Error_
+// @Failure 401 {object} exceptions.Error_
+// @Param Authorization header string true "Bearer JWT token"
 // @Router /users/{username} [get]
 func (c *UserController) GetUserByUsername(ctx *gin.Context) {
 	username := ctx.Param("username")
@@ -78,9 +79,10 @@ func (c *UserController) GetUserByUsername(ctx *gin.Context) {
 // @Tags user
 // @Produce json
 // @Success 200 {object} dto.GetUserDto
-// @Failure 500 {object} errorz.Error_
-// @Failure 503 {object} errorz.Error_
-// @Failure 401 {object} errorz.Error_
+// @Failure 500 {object} exceptions.Error_
+// @Failure 503 {object} exceptions.Error_
+// @Failure 401 {object} exceptions.Error_
+// @Param Authorization header string true "Bearer JWT token"
 // @Router /users/me [get]
 func (c *UserController) GetUserProfile(ctx *gin.Context) {
 	token, err := utils.ExtractTokenFromHeaders(ctx)
@@ -115,9 +117,10 @@ func (c *UserController) GetUserProfile(ctx *gin.Context) {
 // @Produce json
 // @Param user body dto.UpdateUserDto true "User data"
 // @Success 200 {object} dto.GetUserDto
-// @Failure 500 {object} errorz.Error_
-// @Failure 503 {object} errorz.Error_
-// @Failure 401 {object} errorz.Error_
+// @Failure 500 {object} exceptions.Error_
+// @Failure 503 {object} exceptions.Error_
+// @Failure 401 {object} exceptions.Error_
+// @Param Authorization header string true "Bearer JWT token"
 // @Router /users/me [patch]
 func (c *UserController) UpdateUserProfile(ctx *gin.Context) {
 	token, err := utils.ExtractTokenFromHeaders(ctx)

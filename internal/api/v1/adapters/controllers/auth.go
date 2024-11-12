@@ -27,9 +27,9 @@ func NewAuthController(as *auth_service.AuthService) *AuthController {
 // @Produce json
 // @Param credentials body dto.AuthorizeUserDto true "User credentials"
 // @Success 200 {object} dto.GetUserDto
-// @Failure 500 {object} errorz.Error_
-// @Failure 503 {object} errorz.Error_
-// @Failure 400 {object} errorz.Error_
+// @Failure 500 {object} exceptions.Error_
+// @Failure 503 {object} exceptions.Error_
+// @Failure 400 {object} exceptions.Error_
 // @Router /auth [post]
 func (c *AuthController) AuthorizeUser(ctx *gin.Context) {
 	var credentials dto.AuthorizeUserDto
@@ -57,10 +57,11 @@ func (c *AuthController) AuthorizeUser(ctx *gin.Context) {
 // @Produce json
 // @Param passwords body dto.ChangeUserPasswordDto true "User passwords"
 // @Success 200
-// @Failure 500 {object} errorz.Error_
-// @Failure 503 {object} errorz.Error_
-// @Failure 400 {object} errorz.Error_
-// @Failure 401 {object} errorz.Error_
+// @Failure 500 {object} exceptions.Error_
+// @Failure 503 {object} exceptions.Error_
+// @Failure 400 {object} exceptions.Error_
+// @Failure 401 {object} exceptions.Error_
+// @Param Authorization header string true "Bearer JWT token"
 // @Router /auth/changePassword [post]
 func (c *AuthController) ChangePassword(ctx *gin.Context) {
 	var passwords dto.ChangeUserPasswordDto
